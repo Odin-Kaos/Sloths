@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Sloths_Pain"
+version = "0.2.2"
+description = "Proyecto en Python con PyTorch y PyTorch Lightning"
+authors = [
+    { name = "Odei and Lucas"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+
+dependencies = [
+    "torch==2.8.0",
+    "numpy==2.3.3",
+    "pandas==2.3.3",
+    "matplotlib==3.10.6",
+    "pytorch-lightning==2.5.5"
+]
