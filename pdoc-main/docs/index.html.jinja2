@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="pdoc is a simple tool to auto-generate API documentation for Python libraries. It uses your existing docstrings and requires no configuration.">
+    <meta property="og:title" content="pdoc – Generate API Documentation for Python Projects">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pdov.dev/">
+    <meta property="og:image" content="https://pdoc.dev/logo.svg">
+    <title>pdoc – Generate API Documentation for Python Projects</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+    {% autoescape false %}{% filter replace("\n","") | replace("    ","") | replace("<s","\n    <s") %}
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "SoftwareApplication",
+                "name": "pdoc",
+                "operatingSystem": "Python 3",
+                "applicationCategory": "DeveloperApplication",
+                "sameAs": [
+                "https://www.google.com/search?kgmid=/g/11g_rlj66_",
+                "https://en.wikipedia.org/wiki/Pdoc",
+                "https://github.com/mitmproxy/pdoc",
+                "https://pypi.org/project/pdoc/"
+                ],
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD"
+                },
+                "review": {
+                    "@type": "Review",
+                    "reviewRating": {
+                        "@type": "Rating",
+                        "ratingValue": "5"
+                    },
+                    "author": {
+                        "@type": "Person",
+                        "name": "Maximilian Hils",
+                        "sameAs": "https://hi.ls/"
+                    },
+                    "reviewBody": "A lightweight alternative to Sphinx!"
+                },
+                "thumbnailUrl": "https://pdoc.dev/favicon.svg",
+                "image": "https://pdoc.dev/logo.svg",
+                "url": "https://pdoc.dev/",
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": "4.9",
+                    "ratingCount": "855"{# github stars, update occasionally #}
+                }
+            }
+        </script>
+        <style>{% include 'resources/bootstrap.min.css' %}</style>
+        <style>/* pygments */{{ pygments_css }}</style>
+        <style>
+
+            .pdoc-logo {
+                max-width: 200px;
+            }
+
+            h1, h2 {
+                font-size: 1.75rem;
+            }
+
+            {% set boxwidth = 450 %}
+            {% set boxpad = 20 %}
+            {% set minw = boxwidth * 2 + boxpad * 4 %}
+
+            @media (min-width: {{ minw }}px) {
+                #example > input, #example > label {
+                    display: none;
+                }
+            }
+
+            @media (max-width: {{ minw - 1 }}px) {
+                #example-code, #example-render {
+                    display: none;
+                }
+
+                #view-code:checked ~ #example-code {
+                    display: block;
+                }
+
+                #view-render:checked ~ #example-render {
+                    display: block;
+                }
+            }
+
+            #example > label {
+                margin-bottom: 1rem;
+            }
+
+            #example > label[for=view-code] {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+
+            #example > label[for=view-render] {
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+
+            #example-invocation {
+                background-image: url("data:image/svg+xml,{% filter urlencode %}{% include "resources/arrow.svg" %}{% endfilter %}");
+                background-repeat: no-repeat;
+                background-position: bottom center;
+            }
+
+            #example-invocation code {
+                font-size: 1.2em;
+                display: inline-block;
+                border: solid var(--bs-dark) 1px;
+                background-color: rgba(255, 255, 255, 0.8);
+                color: var(--bs-gray-dark);
+                border-radius: 3px;
+                padding: 3px 7px;
+                margin-bottom: 32px;
+            }
+
+            #example-render, #example-code {
+                width: {{ boxwidth }}px;
+                max-width: 98vw;
+                min-height: 350px;
+                margin: 0 {{ boxpad }}px;
+                flex: 0 0 auto;
+                box-shadow: rgba(0, 0, 0, 0.15) 0 20px 68px;
+                border-radius: 5px;
+            }
+
+            #example-code {
+                background-color: rgb(253, 246, 227) !important;
+                position: relative;
+                overflow: auto;
+            }
+
+            #example-code svg {
+                position: absolute;
+                left: 14px;
+                top: 10px;
+            }
+
+            #example-code .title {
+                margin-top: 5px;
+                text-align: center;
+            }
+
+            #example-code .highlight {
+                margin: 15px;
+            }
+
+            #example-code pre {
+                overflow: inherit;
+            }
+
+            #install {
+                text-overflow: ellipsis;
+            }
+
+            .nc {
+                /* fix bad contrast ratio */
+                color: #0978a5;
+            }
+
+            #testimonials img {
+                margin: 0 10px 4px;
+                filter: opacity(0.5) grayscale(100%);
+                transition: all 200ms ease-in-out;
+            }
+
+            #testimonials a:hover img {
+                filter: opacity(1) grayscale(0%);
+            }
+
+        </style>
+    {% endfilter %}{% endautoescape %}
+</head>
+{%- macro icon(name) -%}
+    {% autoescape false %}
+    {% filter replace('<svg ', '<svg aria-hidden="true" ') %}
+        {% include "resources/" + name + ".svg" %}
+    {% endfilter %}
+    {% endautoescape %}
+{%- endmacro %}
+<body class="my-4">
+<header class="container-fluid">
+    <div class="row py-4 my-4 align-items-center">
+        <div class="col-md-6 text-center text-md-end">{% include "logo.svg" %}</div>
+        <div class="col-md-6 pt-md-0 pt-4 text-center text-md-start">
+            <h1><span class="visually-hidden">pdoc: </span>API Documentation<br>for Python Projects</h1>
+        </div>
+    </div>
+</header>
+<aside id="example" class="d-flex align-items-stretch justify-content-center flex-wrap">
+    <div id="example-invocation" class="col-12 text-center">
+        <code class="shadow">pdoc demo.py</code>
+    </div>
+    <input type="radio" class="btn-check" name="view-selector" id="view-code" autocomplete="off" checked>
+    <label class="btn btn-outline-success" for="view-code">Source Code</label>
+    <input type="radio" class="btn-check" name="view-selector" id="view-render" autocomplete="off">
+    <label class="btn btn-outline-success" for="view-render">Rendered Docs</label>
+    <div class="col-12"></div>
+    <div id="example-code">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="54" height="14" viewBox="0 0 54 14">
+            <g>
+                <circle cx="6" cy="6" r="6" fill="#FF5F56" stroke="#E0443E" stroke-width=".5"></circle>
+                <circle cx="26" cy="6" r="6" fill="#FFBD2E" stroke="#DEA123" stroke-width=".5"></circle>
+                <circle cx="46" cy="6" r="6" fill="#27C93F" stroke="#1AAB29" stroke-width=".5"></circle>
+            </g>
+        </svg>
+        <div class="title">demo.py</div>
+        {{ example_html }}
+    </div>
+    <iframe title="rendered demo.py documentation" id="example-render" src="docs/demo.html"></iframe>
+</aside>
+<main class="container text-center my-4 py-4">
+    <div class="row justify-content-center mb-2">
+        <div class="col-md-7">
+            <p>
+                <code>pdoc</code> auto-generates API documentation that follows your project's Python module hierarchy.
+                It requires no configuration, has first-class support for type annotations,
+                cross-links between identifiers, comes with an integrated live-reloading web server,
+                and understands numpydoc or Google-style docstrings.
+            </p>
+        </div>
+    </div>
+
+    <h2>Installation</h2>
+    <div class="d-inline-block" style="max-width: 16rem">
+        <div class="input-group input-group-lg shadow" onclick="getElementById('install').select()">
+            <label for="install" class="input-group-text" aria-label="install instructions">
+                {{ icon("terminal-fill") }}
+            </label>
+            <input id="install" type="text" class="form-control bg-white" value="pip install pdoc" readonly>
+        </div>
+    </div>
+    <div class="mb-3 text-muted">Latest Release: {{ __version__ }}</div>
+    <a href="docs/pdoc.html" class="btn btn-lg btn-success shadow mb-4 d-inline-flex align-items-center">
+        {{ icon("book-half") }}
+        &nbsp;Documentation
+    </a>
+    <a href="https://github.com/mitmproxy/pdoc/blob/main/CHANGELOG.md"
+       class="btn btn-lg btn-danger shadow mb-4 d-inline-flex align-items-center">
+        {{ icon("newspaper") }}
+        &nbsp;Changelog
+    </a>
+    <div class="d-md-none"></div>
+    <a href="https://pypi.org/project/pdoc/"
+       itemprop="sameAs"
+       class="btn btn-lg btn-warning shadow mb-4 d-inline-flex align-items-center">
+        {{ icon("box-seam") }}
+        &nbsp;PyPI
+    </a>
+    <a href="https://github.com/mitmproxy/pdoc"
+       itemprop="sameAs"
+       class="btn btn-lg btn-dark shadow mb-4 d-inline-flex align-items-center">
+        {{ icon("github") }}
+        &nbsp;GitHub
+    </a>
+
+    <div id="testimonials" class="mt-5">
+        <a href="https://or-tools.github.io/docs/pdoc/">
+            <img src="data:image/svg+xml,{% filter urlencode %}{% include "resources/used-by-logos/google.svg" %}{% endfilter %}"
+                 alt="Google" width="89" height="30"  style="margin-top: 6px"></a>
+        <a href="https://github.com/microsoft/LMChallenge">
+            <img src="data:image/svg+xml,{% filter urlencode %}{% include "resources/used-by-logos/microsoft.svg" %}{% endfilter %}"
+                 alt="Microsoft" width="141" height="30"></a>
+        <a href="https://mephisto.ai/python_api/">
+            <img src="data:image/svg+xml,{% filter urlencode %}{% include "resources/used-by-logos/meta.svg" %}{% endfilter %}"
+                 alt="Meta" width="110" height="22"></a>
+        <a href="https://mozilla.github.io/mozilla-schema-generator/mozilla_schema_generator.html">
+            <img src="data:image/svg+xml,{% filter urlencode %}{% include "resources/used-by-logos/mozilla.svg" %}{% endfilter %}"
+                 alt="Mozilla" width="105" height="30"></a>
+        <a href="https://pulsar.apache.org/docs/en/client-libraries-python/">
+            <img src="data:image/svg+xml,{% filter urlencode %}{% include "resources/used-by-logos/apache.svg" %}{% endfilter %}"
+                 alt="Apache Software Foundation" width="100" height="41"></a>
+        <a href="https://docs.mitmproxy.org/stable/api/events.html">
+            <img src="data:image/svg+xml,{% filter urlencode %}{% include "resources/used-by-logos/mitmproxy.svg" %}{% endfilter %}"
+                 alt="mitmproxy" width="132" height="30">
+        </a>
+        <div>and many others use pdoc to document their Python projects.</div>
+    </div>
+</main>
+<footer class="d-none d-md-block">
+    <div class="text-center">
+        Also check out <a class="link-secondary" href="https://autofix.ci">autofix.ci</a>,
+        a tool that automatically fixes pull requests (built by the pdoc developers).
+    </div>
+
+    {% include "resources/_github-button.html" %}
+</footer>
+</body>
+</html>

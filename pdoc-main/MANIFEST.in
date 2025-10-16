@@ -1,0 +1,7 @@
+graft pdoc
+graft requirements
+include CHANGELOG.md
+include LICENSE
+include README.md
+prune **/.mypy_cache
+prune **/__pycache__
