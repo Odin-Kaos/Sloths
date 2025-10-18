@@ -1,0 +1,17 @@
+Metadata-Version: 2.4
+Name: Sloths_Pain
+Version: 0.2.2
+Summary: Proyecto en Python con PyTorch y PyTorch Lightning
+Author: Odei and Lucas
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: torch==2.8.0
+Requires-Dist: numpy==2.3.3
+Requires-Dist: pandas==2.3.3
+Requires-Dist: matplotlib==3.10.6
+Requires-Dist: pytorch-lightning==2.5.5
+
+Download the dataset from thr following link, put the images from the different sets in just one folder per class. Data/pain_au_chocolat and Data/sloths.
+https://www.kaggle.com/datasets/iamrahulthorat/sloths-versus-pain-au-chocolat
+The ipynb will save the images and csv into a new report folder.
+The documentation from the classes and functions imported from the multiples.py can be read in the docs folder or in https://odin-kaos.github.io/Sloths/
