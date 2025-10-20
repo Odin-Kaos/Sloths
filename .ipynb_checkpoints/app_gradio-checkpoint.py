@@ -77,7 +77,7 @@ def analyze_dataset(data_dir, seed, img_size, color_palette):
     counts = [list(dataset.targets).count(i) for i in range(len(class_names))]
     fig2, ax2 = plt.subplots()
     wedges, texts, autotexts = ax2.pie(counts, labels=class_names, autopct="%1.1f%%", startangle=90)
-    centre_circle = plt.Circle((0,0),0.70,fc='white')
+    centre_circle = plt.Circle((0,0),0.9,fc='white')
     fig2.gca().add_artist(centre_circle)
     ax2.set_title("Class Distribution")
     figs.append(fig_to_pil(fig2))
