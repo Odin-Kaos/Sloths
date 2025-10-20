@@ -1,3 +1,21 @@
+"""
+Image Classification Experiment Dashboard using Gradio and PyTorch Lightning.
+
+This script provides an interactive dashboard for analyzing image datasets and
+training classification models. It supports visualization of dataset
+characteristics, training performance, confusion matrices, and calibration
+curves. The interface is built using Gradio and integrates with PyTorch
+Lightning for reproducible training workflows.
+
+Modules used:
+    - gradio: for interactive web interface
+    - torch, torchvision: for deep learning and image preprocessing
+    - pytorch_lightning: for structured training and validation
+    - sklearn: for evaluation metrics and calibration
+    - matplotlib, seaborn: for visualization
+    - PIL: for image manipulation
+"""
+
 import gradio as gr
 import torch
 from torch import nn
@@ -19,10 +37,26 @@ from sklearn.calibration import calibration_curve
 from ImageClassifier import ImageClassifier
 from MetricsCallback import MetricsCallback
 
+
 # ====================================================
 # Convert matplotlib figure to PIL.Image
 # ====================================================
 def fig_to_pil(fig, figsize=None):
+    """
+    Convert a Matplotlib figure to a PIL Image.
+
+    Parameters
+    ----------
+    fig : matplotlib.figure.Figure
+        The Matplotlib figure to convert.
+    figsize : tuple of float, optional
+        Figure size in inches (width, height). If provided, resizes the figure before conversion.
+
+    Returns
+    -------
+    PIL.Image.Image
+        The converted image in RGB mode.
+    """
     if figsize:
         fig.set_size_inches(*figsize)
     buf = io.BytesIO()
@@ -32,11 +66,35 @@ def fig_to_pil(fig, figsize=None):
     plt.close(fig)
     return img
 
+
 # ====================================================
 # Analyze dataset
 # ====================================================
 def analyze_dataset(data_dir, seed, img_size, color_palette):
-    # ---- Seed setup ----
+    """
+    Analyze the image dataset and generate visual summaries.
+
+    This function inspects a dataset in the specified directory, visualizing
+    class distribution, sample images, and image dimension statistics. It also
+    computes and plots color channel histograms per class.
+
+    Parameters
+    ----------
+    data_dir : str
+        Path to the dataset directory containing class subfolders.
+    seed : int
+        Random seed for reproducibility.
+    img_size : int
+        Size (in pixels) to which each image will be resized for visualization.
+    color_palette : str
+        Matplotlib style name for visualization (e.g., "default", "seaborn", "ggplot").
+
+    Returns
+    -------
+    list
+        A list containing a descriptive message followed by PIL images of the
+        generated figures.
+    """
     torch.manual_seed(seed)
     np.random.seed(seed)
     random.seed(seed)
@@ -50,7 +108,6 @@ def analyze_dataset(data_dir, seed, img_size, color_palette):
 
     figs = []
 
-    # Safe style
     try:
         if color_palette != "default":
             plt.style.use(color_palette)
@@ -59,7 +116,7 @@ def analyze_dataset(data_dir, seed, img_size, color_palette):
     except:
         plt.style.use("classic")
 
-    # Two sample images per class
+    # Sample images per class
     fig1, axes1 = plt.subplots(len(class_names), 2, figsize=(6, 2*len(class_names)))
     for i, cls in enumerate(class_names):
         indices = [j for j, (_, label) in enumerate(dataset) if label == i]
@@ -73,7 +130,7 @@ def analyze_dataset(data_dir, seed, img_size, color_palette):
     fig1.suptitle("Sample images per class")
     figs.append(fig_to_pil(fig1))
 
-    # Class distribution donut chart
+    # Class distribution
     counts = [list(dataset.targets).count(i) for i in range(len(class_names))]
     fig2, ax2 = plt.subplots()
     wedges, texts, autotexts = ax2.pie(counts, labels=class_names, autopct="%1.1f%%", startangle=90)
@@ -82,14 +139,14 @@ def analyze_dataset(data_dir, seed, img_size, color_palette):
     ax2.set_title("Class Distribution")
     figs.append(fig_to_pil(fig2))
 
-    # Image dimension distribution - width
+    # Image dimensions
     widths, heights = [], []
     for path, _ in dataset.imgs:
         with Image.open(path) as im:
             w, h = im.size
             widths.append(w)
             heights.append(h)
-    
+
     # Width distribution
     width_bins = np.arange(min(widths), max(widths)+10, 10)
     width_hist, _ = np.histogram(widths, bins=width_bins)
@@ -99,7 +156,7 @@ def analyze_dataset(data_dir, seed, img_size, color_palette):
     ax_width.set_ylabel("Number of images")
     ax_width.set_title("Width Distribution")
     figs.append(fig_to_pil(fig_width))
-    
+
     # Height distribution
     height_bins = np.arange(min(heights), max(heights)+10, 10)
     height_hist, _ = np.histogram(heights, bins=height_bins)
@@ -110,16 +167,7 @@ def analyze_dataset(data_dir, seed, img_size, color_palette):
     ax_height.set_title("Height Distribution")
     figs.append(fig_to_pil(fig_height))
 
-
-
-
-
-
-
-
-
-
-    # Color channel histogram per class
+    # Color histograms
     fig4, axes4 = plt.subplots(len(class_names), 1, figsize=(6, 2*len(class_names)))
     if len(class_names) == 1:
         axes4 = [axes4]
@@ -142,10 +190,40 @@ def analyze_dataset(data_dir, seed, img_size, color_palette):
     message = f"Dataset analysis completed. {len(dataset)} images, {len(class_names)} classes."
     return [message] + figs
 
+
 # ====================================================
 # Main experiment function
 # ====================================================
 def run_experiment(data_dir, seed, img_size, batch_size, epochs, color_palette):
+    """
+    Train an image classification model and visualize performance metrics.
+
+    This function initializes and trains a PyTorch Lightning model on a dataset,
+    using a specified train-validation split. It computes predictions on the
+    validation set and generates visualizations such as confusion matrices and
+    calibration curves.
+
+    Parameters
+    ----------
+    data_dir : str
+        Path to the dataset directory.
+    seed : int
+        Random seed for reproducibility.
+    img_size : int
+        Image resizing dimension in pixels.
+    batch_size : int
+        Number of samples per training batch.
+    epochs : int
+        Number of training epochs.
+    color_palette : str
+        Matplotlib style name for visualization.
+
+    Returns
+    -------
+    list
+        A list containing a descriptive message followed by PIL images of the
+        generated training result figures.
+    """
     torch.manual_seed(seed)
     np.random.seed(seed)
     random.seed(seed)
@@ -201,7 +279,7 @@ def run_experiment(data_dir, seed, img_size, batch_size, epochs, color_palette):
     train_loss = metrics_cb.train_loss[-1] if hasattr(metrics_cb, "train_loss") else None
     val_loss = metrics_cb.val_loss[-1] if hasattr(metrics_cb, "val_loss") else None
 
-    # Table with bigger cell height
+    # Summary table
     fig0, ax0 = plt.subplots(figsize=(6,3))
     table_data = [
         ["Train", f"{train_acc:.4f}" if train_acc else "N/A", f"{train_loss:.4f}" if train_loss else "N/A"],
@@ -211,7 +289,7 @@ def run_experiment(data_dir, seed, img_size, batch_size, epochs, color_palette):
     table.auto_set_font_size(False)
     table.set_fontsize(14)
     for key, cell in table.get_celld().items():
-        cell.set_height(0.2)  # Increase row height
+        cell.set_height(0.2)
     ax0.axis("off")
     ax0.set_title("Final Accuracy and Loss", fontsize=16)
     figs.append(fig_to_pil(fig0))
@@ -242,13 +320,21 @@ def run_experiment(data_dir, seed, img_size, batch_size, epochs, color_palette):
     message = f"Training completed. {epochs} epochs with {len(class_names)} classes."
     return [message] + figs
 
+
 # ====================================================
 # Gradio interface
 # ====================================================
 with gr.Blocks(title="Sloths Pain Experiment Dashboard") as demo:
+    """
+    Launch the Gradio dashboard for dataset analysis and model experimentation.
+
+    The interface provides controls for:
+        - Dataset inspection (sample visualization, class distribution, etc.)
+        - Training configuration (batch size, epochs, image size)
+        - Model training and evaluation visualizations
+    """
     gr.Markdown("## Image Classification Experiments with PyTorch Lightning")
 
-    # Dataset selection and basic parameters
     with gr.Row():
         data_dir = gr.Textbox(label="Data directory", value="data")
         seed = gr.Number(label="Random seed", value=42)
@@ -261,7 +347,6 @@ with gr.Blocks(title="Sloths Pain Experiment Dashboard") as demo:
             label="Visualization style"
         )
 
-    # Dataset analysis button
     analyze_btn = gr.Button("Analyse dataset")
     analyze_output_text = gr.Textbox(label="Dataset analysis output")
     analyze_figs = [gr.Image(label=f"Figure {i+1}") for i in range(4)]
@@ -272,12 +357,10 @@ with gr.Blocks(title="Sloths Pain Experiment Dashboard") as demo:
         outputs=[analyze_output_text] + analyze_figs
     )
 
-    # Training parameters
     with gr.Row():
         batch_size = gr.Slider(8, 64, value=32, step=4, label="Batch size")
         epochs = gr.Slider(1, 10, value=3, step=1, label="Training epochs")
 
-    # Run experiment button
     run_btn = gr.Button("Run experiment")
     output_text = gr.Textbox(label="Experiment output")
     output_images = [gr.Image(label=f"Figure {i+1}") for i in range(3)]
@@ -291,7 +374,30 @@ with gr.Blocks(title="Sloths Pain Experiment Dashboard") as demo:
 demo.launch()
 
 
+# ====================================================
+# Example of Use
+# ====================================================
+# The following example demonstrates how to call the key functions directly
+# without using the Gradio interface. Adjust the `data_dir` path to your dataset.
 
+# Example:
+# if __name__ == "__main__":
+#     data_dir = "path/to/your/dataset"
+#     seed = 42
+#     img_size = 128
+#     batch_size = 32
+#     epochs = 3
+#     color_palette = "seaborn"
+#
+#     # Analyze dataset
+#     analysis_results = analyze_dataset(data_dir, seed, img_size, color_palette)
+#     print(analysis_results[0])  # Prints summary message
+#     analysis_results[1].show()  # Display first figure (sample images)
+#
+#     # Run training experiment
+#     experiment_results = run_experiment(data_dir, seed, img_size, batch_size, epochs, color_palette)
+#     print(experiment_results[0])  # Prints training summary message
+#     experiment_results[1].show()  # Display first result figure (accuracy/loss table)
 
 
 
