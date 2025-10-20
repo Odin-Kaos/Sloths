@@ -1,3 +1,4 @@
+LICENSE.md
 README.md
 pyproject.toml
 src/Sloths_Pain.egg-info/PKG-INFO
@@ -11,5 +12,6 @@ src/sloths/__init__.py
 src/sloths/imshow.py
 src/sloths/module.py
 src/sloths/visualizations.py
+src/sloths/demo/__init__.py
+src/sloths/demo/app_gradio.py
 tests/test_module.py
-tests/test_parameters.py
