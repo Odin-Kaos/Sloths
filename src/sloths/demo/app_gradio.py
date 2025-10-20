@@ -34,8 +34,8 @@ import seaborn as sns
 import io
 from PIL import Image
 from sklearn.calibration import calibration_curve
-from ImageClassifier import ImageClassifier
-from MetricsCallback import MetricsCallback
+from sloths.ImageClassifier import ImageClassifier
+from sloths.MetricsCallback import MetricsCallback
 
 
 # ====================================================

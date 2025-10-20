@@ -5,21 +5,38 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "Sloths_Pain"
 version = "0.2.2"
-description = "Proyecto en Python con PyTorch y PyTorch Lightning"
+description = "Python project using PyTorch and PyTorch Lightning."
 authors = [
-    { name = "Odei and Lucas"}
+    { name = "Odei and Lucas" }
 ]
 readme = "README.md"
+license = { text = "MIT" }
 requires-python = ">=3.12"
 
 dependencies = [
     "torch==2.8.0",
+    "torchvision>=0.20.0",
     "numpy==2.3.3",
     "pandas==2.3.3",
+    "pillow>=10.4.0",
     "matplotlib==3.10.6",
-    "pytorch-lightning==2.5.5"
+    "pytorch-lightning==2.5.5",
+    "scikit-learn>=1.5.0",
     "gradio==5.49.1"
 ]
 
-[tool.setuptools]
-packages = []
+[project.optional-dependencies]
+dev = ["pytest>=8.3.3", "black>=24.10.0", "flake8>=7.1.1"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["sloths*"]
+namespaces = false
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+

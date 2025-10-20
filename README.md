@@ -1,5 +1,51 @@
-Download the dataset from the following link, put the images from the different sets in just one folder per class. Data/pain_au_chocolat and Data/sloths.
-https://www.kaggle.com/datasets/iamrahulthorat/sloths-versus-pain-au-chocolat
-The ipynb will save the images and csv into a new report folder.
-The documentation from the classes and functions imported from the multiples.py can be read in the docs folder or in https://odin-kaos.github.io/Sloths/
-You can run a graphical demo of the project by running  uv run --active python app_gradio.py and accesing the outputted url.
+Sloths_Pain
+
+A lightweight PyTorch Lightning project that classifies sloths vs pain au chocolat using deep learning. It includes data preparation, model training, evaluation reports, and an interactive Gradio demo.
+
+Dataset
+
+Download the dataset from Kaggle:
+[https://www.kaggle.com/datasets/iamrahulthorat/sloths-versus-pain-au-chocolat](https://www.kaggle.com/datasets/iamrahulthorat/sloths-versus-pain-au-chocolat)
+
+Organize the images as follows:
+
+data/
+├── sloths/
+└── pain_au_chocolat/
+
+
+Quick Start
+
+Train the model and generate reports:
+
+uv run python src/sloths/module.py
+
+Reports and CSV summaries will be created under:
+
+reports/
+├── figures/
+├── class_distribution.csv
+├── image_dimensions_summary.csv
+└── train_validation_distribution.csv
+```
+
+Gradio Demo
+
+Run the interactive classifier interface:
+
+uv run --active python app_gradio.py
+
+Then open the URL shown in the terminal.
+
+Documentation
+Full API reference is available at:
+[https://odin-kaos.github.io/Sloths/](https://odin-kaos.github.io/Sloths/)
+
+Testing
+Run the unit tests:
+
+uv run pytest -v
+
+Authors: Odei & Lucas
+Python: >=3.12
+Frameworks: PyTorch, Lightning, Gradio

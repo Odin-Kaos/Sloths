@@ -1,7 +1,0 @@
-torch
-torchvision
-pytorch-lightning
-matplotlib
-numpy
-seaborn
-scikit-learn
