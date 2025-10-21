@@ -48,8 +48,7 @@ uv run pytest -v
 https://test.pypi.org/project/Sloths-Pain/
 If you are running your own uv enviroment you can simply use the following commands to launch the demo.
 ```
-uv pip install -i https://test.pypi.org/simple/ Sloths-Pain==0.2.5
-uvx --from sloths sloths-demo
+uvx --from sloths-pain --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ sloths-demo
 ```
 You will see a link, if you visit it you can perform custom experiments in our demo enviroment.
 The code is adapted to work with any two classes of images you want to work with. Feel free to create a directory with two inner folders, each containing the images of its own class (its name will be read in the folder's name) and use them for the experiment.

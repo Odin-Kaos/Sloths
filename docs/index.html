@@ -105,8 +105,7 @@ reports/
     <p><a href="https://test.pypi.org/project/Sloths-Pain/" target="_blank">https://test.pypi.org/project/Sloths-Pain/</a></p>
     <p>If you are running your own uv environment you can simply use the following commands to launch the demo:</p>
     <pre>
-uv pip install -i https://test.pypi.org/simple/ Sloths-Pain==0.2.5
-uvx --from sloths sloths-demo
+uvx --from sloths-pain --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ sloths-demo
     </pre>
     <p>You will see a link, if you visit it you can perform custom experiments in our demo environment.
     The code is adapted to work with any two classes of images you want to work with. Feel free to create a directory with two inner folders, each containing the images of its own class (its name will be read in the folder's name) and use them for the experiment.

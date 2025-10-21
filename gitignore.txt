@@ -1,0 +1,20 @@
+# Ignore data and checkpoint folders
+data
+checkpoints
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Python temporary files
+__pycache__
+.py[cod]
+.pyo
+.pyd
+.pdb
+.egg-info
+.env
+.venv
+
+# Log files
+.log
