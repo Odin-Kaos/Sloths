@@ -1940,7 +1940,7 @@ wheels = [
 
 [[package]]
 name = "sloths-pain"
-version = "0.2.2"
+version = "0.2.3"
 source = { editable = "." }
 dependencies = [
     { name = "gradio" },
@@ -1971,14 +1971,14 @@ requires-dist = [
     { name = "matplotlib", specifier = "==3.10.6" },
     { name = "numpy", specifier = "==2.3.3" },
     { name = "pandas", specifier = "==2.3.3" },
-    { name = "pillow", specifier = ">=10.4.0" },
+    { name = "pillow", specifier = ">=11.3.0" },
     { name = "pytest", specifier = "==8.4.2" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
     { name = "pytorch-lightning", specifier = "==2.5.5" },
-    { name = "scikit-learn", specifier = ">=1.5.0" },
+    { name = "scikit-learn", specifier = ">=1.7.2" },
     { name = "seaborn", specifier = "==0.13.2" },
     { name = "torch", specifier = "==2.8.0" },
-    { name = "torchvision", specifier = ">=0.20.0" },
+    { name = "torchvision", specifier = ">=0.23.0" },
 ]
 provides-extras = ["dev"]
 

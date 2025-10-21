@@ -32,7 +32,7 @@ dev = ["pytest>=8.3.3", "black>=24.10.0", "flake8>=7.1.1"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["sloths*","demos*"]
+include = ["sloths*","demo*"]
 namespaces = false
 
 [tool.black]
@@ -41,4 +41,7 @@ target-version = ["py312"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[project.scripts]
+sloths-demo = "sloths.demo.app_gradio:main"
 

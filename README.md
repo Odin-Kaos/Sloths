@@ -33,7 +33,7 @@ Gradio Demo
 
 Run the interactive classifier interface:
 
-uv run --active python app_gradio.py
+uv run --active python -m sloths.demo.app_gradio
 
 Then open the URL shown in the terminal.
 

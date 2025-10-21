@@ -1,0 +1,2 @@
+[console_scripts]
+sloths-demo = sloths.demo.app_gradio:main

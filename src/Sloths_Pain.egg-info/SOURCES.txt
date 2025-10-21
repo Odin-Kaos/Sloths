@@ -4,6 +4,7 @@ pyproject.toml
 src/Sloths_Pain.egg-info/PKG-INFO
 src/Sloths_Pain.egg-info/SOURCES.txt
 src/Sloths_Pain.egg-info/dependency_links.txt
+src/Sloths_Pain.egg-info/entry_points.txt
 src/Sloths_Pain.egg-info/requires.txt
 src/Sloths_Pain.egg-info/top_level.txt
 src/sloths/ImageClassifier.py
