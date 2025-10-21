@@ -24,7 +24,8 @@ dependencies = [
     "pytorch-lightning==2.5.5",
     "scikit-learn>=1.7.2",
     "pytest==8.4.2",
-    "gradio==5.49.1"
+    "gradio==5.49.1",
+    "kaggle==1.7.4.5"
 ]
 
 [project.optional-dependencies]

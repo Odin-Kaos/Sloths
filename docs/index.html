@@ -1,7 +1,127 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="refresh" content="0; url=./sloths.html"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="pdoc 15.0.4"/>
+    <title>Module List &ndash; pdoc 15.0.4</title>
+
+    <!-- Bootstrap Reboot and pdoc styles -->
+    <style>
+        /* Reboot and base styles */
+        *, ::after, ::before { box-sizing: border-box; }
+        body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif; font-size: 1rem; line-height: 1.5; color: #212529; background-color: #fff; }
+        h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2;}
+        a { color:#0d6efd; text-decoration: underline; }
+        a:hover { color:#0a58ca; }
+        pre { overflow:auto; font-size:.875em; background:#f8f8f8; padding:.5rem; border:1px solid #ddd; }
+        code { font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:.875em; }
+    </style>
+
+    <!-- Syntax highlighting -->
+    <style>
+        .pdoc-code { background:#f8f8f8; padding:.5em; overflow:auto; }
+        .pdoc-code .k{color:#008000;font-weight:bold;} /* keyword example */
+    </style>
+
+    <!-- Theme and layout -->
+    <style>
+        :root { --pdoc-background:#fff; --text:#212529; --link:#3660a5; --link-hover:#1659c5; --accent:#eee; --accent2:#c1c1c1; --nav-hover:rgba(255,255,255,0.5); }
+        body { background-color: var(--pdoc-background); }
+        nav.pdoc { width: 22rem; position: fixed; height: 100vh; background: var(--accent); border-right:1px solid var(--accent2); overflow:auto; padding:1rem; }
+        main { margin-left: 24rem; padding:2rem; }
+        nav.pdoc ul { list-style:none; padding-left:0; }
+        nav.pdoc li { margin-bottom:.5rem; transition: all 100ms; }
+        nav.pdoc li:hover { background-color: var(--nav-hover); }
+        nav.pdoc a { color: var(--text); text-decoration:none; display:block; }
+    </style>
 </head>
+<body>
+    <!-- Sidebar navigation -->
+    <nav class="pdoc">
+        <h2>Available Modules</h2>
+        <ul>
+            <li><a href="sloths/ImageClassifier.html">sloths.ImageClassifier</a></li>
+            <li><a href="sloths/MetricsCallback.html">sloths.MetricsCallback</a></li>
+            <li><a href="sloths/imshow.html">sloths.imshow</a></li>
+            <li><a href="sloths/visualizations.html">sloths.visualizations</a></li>
+            <li><a href="sloths/demo/app_gradio.html">sloths.demo.app_gradio</a></li>
+        </ul>
+    </nav>
+
+    <!-- Header -->
+    <header class="pdoc">
+        <a href="https://pdoc.dev">
+            <img src="data:image/svg+xml,%3Csvg ... %3E" alt="pdoc logo" style="max-width:200px;"/>
+        </a>
+    </header>
+
+    <!-- Main content -->
+    <main class="pdoc">
+        <section class="module-info">
+            <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sloths_Pain</title>
+</head>
+<body>
+    <h1>Sloths_Pain</h1>
+    <p>A lightweight PyTorch Lightning project that classifies sloths vs pain au chocolat using deep learning. It includes data preparation, model training, evaluation reports, and an interactive Gradio demo.
+    There are two options to use our scripts.</p>
+
+    <h2>Github</h2>
+
+    <h3>Dataset</h3>
+    <p>Download the dataset from Kaggle: <a href="https://www.kaggle.com/datasets/iamrahulthorat/sloths-versus-pain-au-chocolat" target="_blank">https://www.kaggle.com/datasets/iamrahulthorat/sloths-versus-pain-au-chocolat</a></p>
+    <p>Organize the images as follows:</p>
+    <pre>
+data/
+├── sloths/
+└── pain_au_chocolat/
+    </pre>
+
+    <h3>Quick Start</h3>
+    <p>Train the model and generate reports:</p>
+    <pre>uv run python src/sloths/module.py</pre>
+    <p>Reports and CSV summaries will be created under:</p>
+    <pre>
+reports/
+├── figures/
+├── class_distribution.csv
+├── image_dimensions_summary.csv
+└── train_validation_distribution.csv
+    </pre>
+
+    <h3>Gradio Demo</h3>
+    <p>Run the interactive classifier interface:</p>
+    <pre>uv run --active python -m sloths.demo.app_gradio</pre>
+    <p>More about the demo in the PyPI section. Then open the URL shown in the terminal.</p>
+
+    <h3>Testing</h3>
+    <p>Run the unit tests:</p>
+    <pre>uv run pytest -v</pre>
+
+    <h2>PyPI</h2>
+    <p><a href="https://test.pypi.org/project/Sloths-Pain/" target="_blank">https://test.pypi.org/project/Sloths-Pain/</a></p>
+    <p>If you are running your own uv environment you can simply use the following commands to launch the demo:</p>
+    <pre>
+uv pip install -i https://test.pypi.org/simple/ Sloths-Pain==0.2.5
+uvx --from sloths sloths-demo
+    </pre>
+    <p>You will see a link, if you visit it you can perform custom experiments in our demo environment.
+    The code is adapted to work with any two classes of images you want to work with. Feel free to create a directory with two inner folders, each containing the images of its own class (its name will be read in the folder's name) and use them for the experiment.
+    For a first controlled test, we suggest to use the intended database for our project in: 
+    <a href="https://www.kaggle.com/datasets/iamrahulthorat/sloths-versus-pain-au-chocolat" target="_blank">https://www.kaggle.com/datasets/iamrahulthorat/sloths-versus-pain-au-chocolat</a>
+    You can input your Kaggle username and key obtained when creating a new API token. If you do so, the demo can download the dataset in a temporary file and run with the images located there automatically.</p>
+
+    <h2>Documentation</h2>
+    <p>Full API reference is available at: <a href="https://odin-kaos.github.io/Sloths/" target="_blank">https://odin-kaos.github.io/Sloths/</a></p>
+
+    <p><strong>Authors:</strong> Odei & Lucas<br>
+    <strong>Python:</strong> >=3.12<br>
+    <strong>Frameworks:</strong> PyTorch, Lightning, Gradio</p>
+</body>
+        </section>
+    </main>
+</body>
 </html>

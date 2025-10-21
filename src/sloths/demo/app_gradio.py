@@ -1,4 +1,4 @@
-import os, random
+import os, random, io, json, tempfile, shutil
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,6 +11,9 @@ from pytorch_lightning import Trainer
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.calibration import calibration_curve
 from torch import nn
+import atexit
+import zipfile
+import subprocess
 
 from sloths.ImageClassifier import ImageClassifier
 from sloths.MetricsCallback import MetricsCallback
@@ -21,11 +24,119 @@ from sloths.MetricsCallback import MetricsCallback
 # ====================================================
 def fig_to_pil(fig):
     """Convert a matplotlib figure to a PIL image."""
-    import io
     buf = io.BytesIO()
     fig.savefig(buf, format="png", bbox_inches="tight")
     buf.seek(0)
     return Image.open(buf)
+
+
+TEMP_DATA_DIR = None
+KAGGLE_JSON_PATH = os.path.expanduser("~/.config/kaggle/kaggle.json")
+
+
+def download_kaggle_dataset(username: str, key: str):
+    """
+    Downloads the Kaggle dataset 'Sloths versus Pain au Chocolat' using temporary credentials.
+    The dataset is extracted into a temporary folder, and the 'train' subfolder is used as data source.
+    The download directory is automatically opened in the system file explorer.
+    """
+    global TEMP_DATA_DIR
+    tmp_dir = tempfile.mkdtemp(prefix="sloths_kaggle_")
+    TEMP_DATA_DIR = tmp_dir  # For cleanup later
+
+    kaggle_dir = os.path.dirname(KAGGLE_JSON_PATH)
+    os.makedirs(kaggle_dir, exist_ok=True)
+
+    creds = {"username": username.strip(), "key": key.strip()}
+    with open(KAGGLE_JSON_PATH, "w") as f:
+        json.dump(creds, f)
+    os.chmod(KAGGLE_JSON_PATH, 0o600)
+
+    print("Downloading dataset from Kaggle...")
+    result = subprocess.run(
+        [
+            "kaggle",
+            "datasets",
+            "download",
+            "-d",
+            "iamrahulthorat/sloths-versus-pain-au-chocolat",
+            "-p",
+            tmp_dir,
+        ],
+        capture_output=True,
+        text=True,
+    )
+
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"Kaggle download failed:\n{result.stderr}\n"
+            "Check your Kaggle username and key, and ensure the Kaggle API is enabled."
+        )
+
+    # Extract the downloaded ZIP file
+    zip_files = [f for f in os.listdir(tmp_dir) if f.endswith(".zip")]
+    if not zip_files:
+        raise FileNotFoundError("No ZIP file found in the Kaggle download.")
+    zip_path = os.path.join(tmp_dir, zip_files[0])
+
+    with zipfile.ZipFile(zip_path, "r") as zip_ref:
+        zip_ref.extractall(tmp_dir)
+    os.remove(zip_path)
+
+    # Locate the 'train' folder inside 'sloths_versus_pain_au_chocolat'
+    dataset_root = os.path.join(tmp_dir, "sloths_versus_pain_au_chocolat")
+    train_dir = os.path.join(dataset_root, "train")
+
+    if not os.path.exists(train_dir):
+        raise FileNotFoundError(
+            f"Expected 'train' folder inside {dataset_root}, but it was not found."
+        )
+
+    # Open the dataset folder in the system file explorer
+    try:
+        if sys.platform.startswith("darwin"):  # macOS
+            subprocess.run(["open", dataset_root])
+        elif sys.platform.startswith("win"):  # Windows
+            subprocess.run(["explorer", dataset_root])
+        else:  # Linux and others
+            subprocess.run(["xdg-open", dataset_root])
+    except Exception as e:
+        print(f"Could not open the dataset folder automatically: {e}")
+
+    print(f"Dataset successfully downloaded to: {dataset_root}")
+    print(f"Using training data from: {train_dir}")
+
+    return tmp_dir, train_dir
+
+
+def cleanup():
+    """
+    Deletes the temporary dataset directory and any Kaggle credentials
+    that were created during the demo.
+    """
+    global TEMP_DATA_DIR
+
+    # Remove the temporary data directory
+    if TEMP_DATA_DIR and os.path.exists(TEMP_DATA_DIR):
+        try:
+            shutil.rmtree(TEMP_DATA_DIR)
+            print(f"Temporary data directory removed: {TEMP_DATA_DIR}")
+        except Exception as e:
+            print(f"Failed to remove temporary directory: {e}")
+
+    # Remove the temporary Kaggle credentials
+    if os.path.exists(KAGGLE_JSON_PATH):
+        try:
+            os.remove(KAGGLE_JSON_PATH)
+            print("Temporary kaggle.json removed.")
+        except Exception as e:
+            print(f"Failed to remove kaggle.json: {e}")
+
+
+
+
+
+
 
 
 # ====================================================
@@ -200,11 +311,31 @@ def run_experiment(data_dir, seed, img_size, batch_size, epochs, color_palette):
 # ====================================================
 def main():
     """Launch the interactive Gradio dashboard."""
+    temp_dirs = []
+
     with gr.Blocks(title="Sloths Pain Experiment Dashboard") as demo:
+        gr.Markdown("## Kaggle Dataset Downloader")
+        with gr.Row():
+            kaggle_user = gr.Textbox(label="Kaggle Username")
+            kaggle_key = gr.Textbox(label="Kaggle Key", type="password")
+        kaggle_status = gr.Textbox(label="Status", interactive=False)
+        data_dir = gr.Textbox(label="Data directory (auto-filled after download)", value="")
+
+        def handle_kaggle_download(username, key):
+            tmp_dir, train_dir = download_kaggle_dataset(username, key)
+            temp_dirs.append(tmp_dir)
+            return f"Dataset downloaded successfully to {train_dir}", train_dir
+
+        kaggle_button = gr.Button("Download from Kaggle")
+        kaggle_button.click(
+            fn=handle_kaggle_download,
+            inputs=[kaggle_user, kaggle_key],
+            outputs=[kaggle_status, data_dir]
+        )
+
         gr.Markdown("## Image Classification Experiments with PyTorch Lightning")
 
         with gr.Row():
-            data_dir = gr.Textbox(label="Data directory", value="data")
             seed = gr.Number(label="Random seed", value=42)
 
         with gr.Row():
@@ -239,10 +370,19 @@ def main():
             outputs=[output_text] + output_images
         )
 
-    demo.launch()
+    # Cleanup function
+    def cleanup():
+        """Remove temporary dataset directories after demo exits."""
+        import shutil
+        for d in temp_dirs:
+            shutil.rmtree(d, ignore_errors=True)
+
+    # Register cleanup to run when Python exits
+    atexit.register(cleanup)
+
+    demo.launch(share=False, prevent_thread_lock=False)
+
 
 
 if __name__ == "__main__":
     main()
-
-

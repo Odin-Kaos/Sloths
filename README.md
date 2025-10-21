@@ -35,6 +35,7 @@ reports/
 Run the interactive classifier interface:
 
 uv run --active python -m sloths.demo.app_gradio
+More about the demo in the Pypi section.
 
 Then open the URL shown in the terminal.
 
@@ -51,12 +52,10 @@ uv pip install -i https://test.pypi.org/simple/ Sloths-Pain==0.2.5
 uvx --from sloths sloths-demo
 ```
 You will see a link, if you visit it you can perform custom experiments in our demo enviroment.
-The code is adapted to work with any two classes of images you want to work with. Just create a directory with
-two inner folders, each containing the images of its own class (its name will be read in the folder's name).
+The code is adapted to work with any two classes of images you want to work with. Feel free to create a directory with two inner folders, each containing the images of its own class (its name will be read in the folder's name) and use them for the experiment.
 For a first controlled test, we suggest to use the intended database for our project in:
-
 https://www.kaggle.com/datasets/iamrahulthorat/sloths-versus-pain-au-chocolat
-
+You can input you kaggle username and key obtained when creating a new api token. If you do so, the demo can download the dataset in a temporal file and run with the images located there automatically.
 
 
 
